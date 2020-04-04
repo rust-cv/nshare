@@ -3,6 +3,13 @@ name = "nshare"
 version = "0.1.0"
 authors = ["Geordon Worley <vadixidav@gmail.com>"]
 edition = "2018"
+description = "Conversion between n-dimensional types in different Rust crates"
+documentation = "https://docs.rs/nshare/"
+repository = "https://github.com/rust-cv/nshare"
+keywords = ["ndarray", "nalgebra", "image", "convert", "borrow"]
+categories = ["rust-patterns"]
+license = "MIT"
+readme = "README.md"
 
 [features]
 defalut = []
