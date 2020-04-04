@@ -37,8 +37,8 @@ pub trait ToNdarray3 {
 #[cfg(feature = "nalgebra")]
 mod nalgebra_impl {
     use super::*;
-    use nalgebra::{Dim, Matrix, Scalar, SliceStorage};
-    use ndarray::{ArrayView2, ShapeBuilder};
+    use nalgebra::{Dim, Matrix, Scalar, SliceStorage, SliceStorageMut};
+    use ndarray::{ArrayView2, ArrayViewMut2, ShapeBuilder};
 
     /// ```
     /// use nshare::ToNdarray2;
@@ -62,6 +62,37 @@ mod nalgebra_impl {
         fn to_ndarray2(self) -> Self::Out {
             unsafe {
                 ArrayView2::from_shape_ptr(self.shape().strides(self.strides()), self.as_ptr())
+            }
+        }
+    }
+
+    /// ```
+    /// use nshare::ToNdarray2;
+    /// use nalgebra::Matrix4;
+    ///
+    /// let mut m = Matrix4::new(
+    ///     0.1, 0.2, 0.3, 0.4,
+    ///     0.5, 0.6, 0.7, 0.8,
+    ///     1.1, 1.2, 1.3, 1.4,
+    ///     1.5, 1.6, 1.7, 1.8,
+    /// );
+    /// let arr = m.row_mut(1).to_ndarray2();
+    /// for n in arr {
+    ///     *n = 0.0;
+    /// }
+    /// assert!(m.row(1).iter().eq(&[0.0; 4]));
+    /// ```
+    impl<'a, N: Scalar, R: Dim, C: Dim, RStride: Dim, CStride: Dim> ToNdarray2
+        for Matrix<N, R, C, SliceStorageMut<'a, N, R, C, RStride, CStride>>
+    {
+        type Out = ArrayViewMut2<'a, N>;
+
+        fn to_ndarray2(self) -> Self::Out {
+            unsafe {
+                ArrayViewMut2::from_shape_ptr(
+                    self.shape().strides(self.strides()),
+                    self.as_ptr() as *mut N,
+                )
             }
         }
     }
