@@ -1,8 +1,8 @@
 //! Implementations for conversions from image types to ndarray types.
 
 use super::*;
-use image::{ImageBuffer, Luma, Primitive};
-use ndarray::{Array2, ArrayView2, ArrayViewMut2, ShapeBuilder};
+use image::{flat::SampleLayout, ImageBuffer, Luma, Pixel, Primitive};
+use ndarray::{Array2, Array3, ArrayView2, ArrayViewMut2, ShapeBuilder};
 use std::ops::{Deref, DerefMut};
 
 /// ```
@@ -12,7 +12,6 @@ use std::ops::{Deref, DerefMut};
 ///
 /// let zeros = GrayImage::new(2, 4);
 /// let mut nd = zeros.to_ndarray2();
-/// // Fill x = 1 to all 255.
 /// nd.fill(255);
 /// // ndarray uses (row, col), so the dims get flipped.
 /// assert_eq!(nd.dim(), (4, 2));
@@ -24,10 +23,20 @@ where
     type Out = Array2<A>;
 
     fn to_ndarray2(self) -> Self::Out {
-        let (width, height) = self.dimensions();
+        let SampleLayout {
+            height,
+            height_stride,
+            width,
+            width_stride,
+            ..
+        } = self.sample_layout();
         let (width, height) = (width as usize, height as usize);
         let container = self.into_raw();
-        Array2::from_shape_vec((height, width), container).unwrap()
+        Array2::from_shape_vec(
+            (height, width).strides((height_stride, width_stride)),
+            container,
+        )
+        .unwrap()
     }
 }
 
@@ -80,5 +89,45 @@ where
         let (width, height) = self.dimensions();
         let (width, height) = (width as usize, height as usize);
         ArrayViewMut2::from_shape((height, width).strides((width, 1)), &mut **self).unwrap()
+    }
+}
+
+/// ```
+/// use image::RgbImage;
+/// use nshare::ToNdarray3;
+/// use ndarray::s;
+///
+/// let zeros = RgbImage::new(2, 4);
+/// let mut nd = zeros.to_ndarray3();
+/// nd.fill(255);
+/// // ndarray uses (row, col), so the dims get flipped.
+/// assert_eq!(nd.dim(), (3, 4, 2));
+/// ```
+impl<P> ToNdarray3 for ImageBuffer<P, Vec<P::Subpixel>>
+where
+    P: Pixel + 'static,
+{
+    type Out = Array3<P::Subpixel>;
+
+    fn to_ndarray3(self) -> Self::Out {
+        let SampleLayout {
+            channels,
+            channel_stride,
+            height,
+            height_stride,
+            width,
+            width_stride,
+        } = self.sample_layout();
+        let (width, height) = (width as usize, height as usize);
+        let container = self.into_raw();
+        Array3::from_shape_vec(
+            (channels as usize, height, width).strides((
+                channel_stride,
+                height_stride,
+                width_stride,
+            )),
+            container,
+        )
+        .unwrap()
     }
 }
