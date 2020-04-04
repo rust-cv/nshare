@@ -116,6 +116,62 @@ impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
 }
 
 /// ```
+/// use nshare::RefNdarray2;
+/// use nalgebra::Matrix4;
+/// use ndarray::s;
+///
+/// let m = Matrix4::new(
+///     0.1, 0.2, 0.3, 0.4,
+///     0.5, 0.6, 0.7, 0.8,
+///     1.1, 1.2, 1.3, 1.4,
+///     1.5, 1.6, 1.7, 1.8,
+/// );
+/// let arr = m.ref_ndarray2();
+/// assert!(arr.slice(s![1, ..]).iter().eq(&[0.5, 0.6, 0.7, 0.8]));
+/// assert_eq!(arr.dim(), (4, 4));
+/// ```
+impl<'a, N: Scalar, R: Dim, C: Dim, S> RefNdarray2 for &'a Matrix<N, R, C, S>
+where
+    S: Storage<N, R, C>,
+{
+    type Out = ArrayView2<'a, N>;
+
+    fn ref_ndarray2(self) -> Self::Out {
+        unsafe { ArrayView2::from_shape_ptr(self.shape().strides(self.strides()), self.as_ptr()) }
+    }
+}
+
+/// ```
+/// use nshare::MutNdarray2;
+/// use nalgebra::Matrix4;
+/// use ndarray::s;
+///
+/// let mut m = Matrix4::new(
+///     0.1, 0.2, 0.3, 0.4,
+///     0.5, 0.6, 0.7, 0.8,
+///     1.1, 1.2, 1.3, 1.4,
+///     1.5, 1.6, 1.7, 1.8,
+/// );
+/// let arr = m.mut_ndarray2().slice_mut(s![1, ..]).fill(0.0);
+/// assert!(m.row(1).iter().eq(&[0.0; 4]));
+/// ```
+impl<'a, N: Scalar, R: Dim, C: Dim, S> MutNdarray2 for &'a mut Matrix<N, R, C, S>
+where
+    S: StorageMut<N, R, C>,
+{
+    type Out = ArrayViewMut2<'a, N>;
+
+    fn mut_ndarray2(self) -> Self::Out {
+        unsafe {
+            ArrayViewMut2::from_shape_ptr(
+                self.shape().strides(self.strides()),
+                self.as_ptr() as *mut N,
+            )
+        }
+    }
+}
+
+/// ```
 /// use nshare::ToNdarray2;
 /// use nalgebra::Matrix4;
 ///
