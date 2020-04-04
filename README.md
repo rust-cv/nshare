@@ -1,6 +1,6 @@
 # nshare
 
-[![Discord][dci]][dcl] [![Crates.io][ci]][cl] ![MIT/Apache][li] [![docs.rs][di]][dl] ![LoC][lo] ![Tests][btl] ![Lints][bll] ![no_std][bnl]
+[![Discord][dci]][dcl] [![Crates.io][ci]][cl] ![MIT/Apache][li] [![docs.rs][di]][dl] ![LoC][lo] ![Tests][btl] ![Lints][bll]
 
 [ci]: https://img.shields.io/crates/v/nshare.svg
 [cl]: https://crates.io/crates/nshare/
@@ -17,7 +17,6 @@
 
 [btl]: https://github.com/rust-cv/nshare/workflows/unit%20tests/badge.svg
 [bll]: https://github.com/rust-cv/nshare/workflows/lints/badge.svg
-[bnl]: https://github.com/rust-cv/nshare/workflows/no-std/badge.svg
 
 Provides traits that allow conversion between n-dimensional types in different Rust crates
 
