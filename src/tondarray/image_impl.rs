@@ -2,7 +2,7 @@
 
 use super::*;
 use image::{flat::SampleLayout, ImageBuffer, Luma, Pixel, Primitive};
-use ndarray::{Array2, Array3, ArrayView2, ArrayViewMut2, ShapeBuilder};
+use ndarray::{Array2, Array3, ArrayView2, ArrayView3, ArrayViewMut2, ShapeBuilder};
 use std::ops::{Deref, DerefMut};
 
 /// ```
@@ -110,7 +110,7 @@ where
 /// let zeros = RgbImage::new(2, 4);
 /// let mut nd = zeros.to_ndarray3();
 /// nd.fill(255);
-/// // ndarray uses (row, col), so the dims get flipped.
+/// // ndarray uses (channel, row, col), so the dims get flipped.
 /// assert_eq!(nd.dim(), (3, 4, 2));
 /// ```
 impl<P> ToNdarray3 for ImageBuffer<P, Vec<P::Subpixel>>
@@ -131,5 +131,41 @@ where
         let shape = (channels as usize, height as usize, width as usize);
         let strides = (channel_stride, height_stride, width_stride);
         Array3::from_shape_vec(shape.strides(strides), self.into_raw()).unwrap()
+    }
+}
+
+/// ```
+/// use image::{RgbImage, Rgb};
+/// use nshare::RefNdarray3;
+/// use ndarray::s;
+///
+/// let mut vals = RgbImage::new(2, 4);
+/// vals[(1, 0)] = Rgb([0, 255, 0]);
+/// let nd = vals.ref_ndarray3();
+/// // ndarray uses (channel, row, col), so the dims get flipped.
+/// assert_eq!(nd.dim(), (3, 4, 2));
+/// // The first row green should sum to 255.
+/// assert_eq!(nd.slice(s![1, 0, ..]).sum(), 255);
+/// // The first row red should sum to 0.
+/// assert_eq!(nd.slice(s![0, 0, ..]).sum(), 0);
+/// ```
+impl<'a, P> RefNdarray3 for &'a ImageBuffer<P, Vec<P::Subpixel>>
+where
+    P: Pixel + 'static,
+{
+    type Out = ArrayView3<'a, P::Subpixel>;
+
+    fn ref_ndarray3(self) -> Self::Out {
+        let SampleLayout {
+            channels,
+            channel_stride,
+            height,
+            height_stride,
+            width,
+            width_stride,
+        } = self.sample_layout();
+        let shape = (channels as usize, height as usize, width as usize);
+        let strides = (channel_stride, height_stride, width_stride);
+        ArrayView3::from_shape(shape.strides(strides), &**self).unwrap()
     }
 }
