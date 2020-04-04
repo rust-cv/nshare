@@ -37,8 +37,62 @@ pub trait ToNdarray3 {
 #[cfg(feature = "nalgebra")]
 mod nalgebra_impl {
     use super::*;
-    use nalgebra::{Dim, Matrix, Scalar, SliceStorage, SliceStorageMut};
-    use ndarray::{ArrayView2, ArrayViewMut2, ShapeBuilder};
+    use nalgebra::{dimension::U1, Dim, Matrix, Scalar, SliceStorage, SliceStorageMut, Vector};
+    use ndarray::{ArrayView1, ArrayView2, ArrayViewMut1, ArrayViewMut2, ShapeBuilder};
+
+    /// ```
+    /// use nshare::ToNdarray1;
+    /// use nalgebra::Vector4;
+    ///
+    /// let m = Vector4::new(
+    ///     0.1, 0.2, 0.3, 0.4f32,
+    /// );
+    /// let arr = m.rows(0, 4).to_ndarray1();
+    /// assert!(arr.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
+    /// assert_eq!(arr.dim(), 4);
+    /// ```
+    impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
+        for Vector<N, R, SliceStorage<'a, N, R, U1, RStride, CStride>>
+    {
+        type Out = ArrayView1<'a, N>;
+
+        fn to_ndarray1(self) -> Self::Out {
+            unsafe {
+                ArrayView1::from_shape_ptr(
+                    (self.shape().0,).strides((self.strides().0,)),
+                    self.as_ptr(),
+                )
+            }
+        }
+    }
+
+    /// ```
+    /// use nshare::ToNdarray1;
+    /// use nalgebra::{Vector4, dimension::U2};
+    ///
+    /// let mut m = Vector4::new(
+    ///     0.1, 0.2, 0.3, 0.4,
+    /// );
+    /// let arr = m.rows_generic_with_step_mut::<U2>(0, U2, 1).to_ndarray1();
+    /// for n in arr {
+    ///     *n = 0.0;
+    /// }
+    /// assert!(m.iter().eq(&[0.0, 0.2, 0.0, 0.4]));
+    /// ```
+    impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
+        for Matrix<N, R, U1, SliceStorageMut<'a, N, R, U1, RStride, CStride>>
+    {
+        type Out = ArrayViewMut1<'a, N>;
+
+        fn to_ndarray1(self) -> Self::Out {
+            unsafe {
+                ArrayViewMut1::from_shape_ptr(
+                    (self.shape().0,).strides((self.strides().0,)),
+                    self.as_ptr() as *mut N,
+                )
+            }
+        }
+    }
 
     /// ```
     /// use nshare::ToNdarray2;
