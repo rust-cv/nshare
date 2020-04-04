@@ -31,6 +31,19 @@ where
     }
 }
 
+/// ```
+/// use image::{GrayImage, Luma};
+/// use nshare::RefNdarray2;
+/// use ndarray::s;
+///
+/// let mut vals = GrayImage::new(2, 4);
+/// vals[(1, 0)] = Luma([255]);
+/// let nd = vals.ref_ndarray2();
+/// // ndarray uses (row, col), so the dims get flipped.
+/// assert_eq!(nd.dim(), (4, 2));
+/// // The first row should sum to 255.
+/// assert_eq!(nd.slice(s![0, ..]).sum(), 255);
+/// ```
 impl<'a, A, Container> RefNdarray2 for &'a ImageBuffer<Luma<A>, Container>
 where
     A: Primitive + 'static,
