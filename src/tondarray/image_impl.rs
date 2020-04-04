@@ -2,7 +2,7 @@
 
 use super::*;
 use image::{flat::SampleLayout, ImageBuffer, Luma, Pixel, Primitive};
-use ndarray::{Array2, Array3, ArrayView2, ArrayView3, ArrayViewMut2, ShapeBuilder};
+use ndarray::{Array2, Array3, ArrayView2, ArrayView3, ArrayViewMut2, ArrayViewMut3, ShapeBuilder};
 use std::ops::{Deref, DerefMut};
 
 /// ```
@@ -167,5 +167,36 @@ where
         let shape = (channels as usize, height as usize, width as usize);
         let strides = (channel_stride, height_stride, width_stride);
         ArrayView3::from_shape(shape.strides(strides), &**self).unwrap()
+    }
+}
+
+/// ```
+/// use image::{RgbImage, Rgb};
+/// use nshare::MutNdarray3;
+/// use ndarray::s;
+///
+/// let mut vals = RgbImage::new(2, 4);
+/// // Set all the blue channel to 255.
+/// vals.mut_ndarray3().slice_mut(s![2, .., ..]).fill(255);
+/// assert_eq!(vals[(0, 0)], Rgb([0, 0, 255]));
+/// ```
+impl<'a, P> MutNdarray3 for &'a mut ImageBuffer<P, Vec<P::Subpixel>>
+where
+    P: Pixel + 'static,
+{
+    type Out = ArrayViewMut3<'a, P::Subpixel>;
+
+    fn mut_ndarray3(self) -> Self::Out {
+        let SampleLayout {
+            channels,
+            channel_stride,
+            height,
+            height_stride,
+            width,
+            width_stride,
+        } = self.sample_layout();
+        let shape = (channels as usize, height as usize, width as usize);
+        let strides = (channel_stride, height_stride, width_stride);
+        ArrayViewMut3::from_shape(shape.strides(strides), &mut **self).unwrap()
     }
 }
