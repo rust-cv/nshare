@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["Geordon Worley <vadixidav@gmail.com>"]
 edition = "2018"
 
+[features]
+defalut = []
+std = ["nalgebra/std"]
+
 [dependencies]
 ndarray = { version = "0.13.0", default-features = false, optional = true }
 nalgebra = { version = "0.20.0", default-features = false, optional = true }
