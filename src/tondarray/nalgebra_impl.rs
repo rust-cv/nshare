@@ -2,7 +2,9 @@
 
 use super::*;
 use nalgebra::{
-    dimension::U1, storage::Storage, Dim, Matrix, Scalar, SliceStorage, SliceStorageMut, Vector,
+    dimension::U1,
+    storage::{Storage, StorageMut},
+    Dim, Matrix, Scalar, SliceStorage, SliceStorageMut, Vector,
 };
 use ndarray::{ArrayView1, ArrayView2, ArrayViewMut1, ArrayViewMut2, ShapeBuilder};
 
@@ -29,6 +31,34 @@ where
             ArrayView1::from_shape_ptr(
                 (self.shape().0,).strides((self.strides().0,)),
                 self.as_ptr(),
+            )
+        }
+    }
+}
+
+/// ```
+/// use nshare::MutNdarray1;
+/// use nalgebra::Vector4;
+/// use ndarray::s;
+///
+/// let mut m = Vector4::new(
+///     0.1, 0.2, 0.3, 0.4f32,
+/// );
+/// // Set everything to 0.
+/// m.mut_ndarray1().fill(0.0);
+/// assert!(m.iter().eq(&[0.0; 4]));
+/// ```
+impl<'a, N: Scalar, R: Dim, S> MutNdarray1 for &'a mut Vector<N, R, S>
+where
+    S: StorageMut<N, R, U1>,
+{
+    type Out = ArrayViewMut1<'a, N>;
+
+    fn mut_ndarray1(self) -> Self::Out {
+        unsafe {
+            ArrayViewMut1::from_shape_ptr(
+                (self.shape().0,).strides((self.strides().0,)),
+                self.as_ptr() as *mut N,
             )
         }
     }
