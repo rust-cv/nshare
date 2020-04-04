@@ -38,7 +38,7 @@ pub trait ToNdarray3 {
     fn to_ndarray3(self) -> Self::Out;
 }
 
-/// Converts a refferenced 1d type to a ndarray 1d array type.
+/// Borrows a 1d type to a ndarray 1d array type.
 ///
 /// This uses an associated type to avoid ambiguity for the compiler.
 /// By calling this, the compiler always knows the returned type.
@@ -48,7 +48,7 @@ pub trait RefNdarray1 {
     fn ref_ndarray1(self) -> Self::Out;
 }
 
-/// Converts a refferenced 2d type to a ndarray 2d array type.
+/// Borrows a 2d type to a ndarray 2d array type.
 ///
 /// Coordinates are in (row, col).
 ///
@@ -60,7 +60,7 @@ pub trait RefNdarray2 {
     fn ref_ndarray2(self) -> Self::Out;
 }
 
-/// Converts a refferenced 3d type to a ndarray 2d array type.
+/// Borrows a 3d type to a ndarray 2d array type.
 ///
 /// Coordinates are in `(channel, row, col)`, where channel is typically a color channel,
 /// or they are in `(z, y, x)`.
@@ -71,4 +71,39 @@ pub trait RefNdarray3 {
     type Out;
 
     fn ref_ndarray3(self) -> Self::Out;
+}
+
+/// Mutably borrows a 1d type to a ndarray 1d array type.
+///
+/// This uses an associated type to avoid ambiguity for the compiler.
+/// By calling this, the compiler always knows the returned type.
+pub trait MutNdarray1 {
+    type Out;
+
+    fn mut_ndarray1(self) -> Self::Out;
+}
+
+/// Mutably borrows a 2d type to a ndarray 2d array type.
+///
+/// Coordinates are in (row, col).
+///
+/// This uses an associated type to avoid ambiguity for the compiler.
+/// By calling this, the compiler always knows the returned type.
+pub trait MutNdarray2 {
+    type Out;
+
+    fn mut_ndarray2(self) -> Self::Out;
+}
+
+/// Mutably borrows a 3d type to a ndarray 2d array type.
+///
+/// Coordinates are in `(channel, row, col)`, where channel is typically a color channel,
+/// or they are in `(z, y, x)`.
+///
+/// This uses an associated type to avoid ambiguity for the compiler.
+/// By calling this, the compiler always knows the returned type.
+pub trait MutNdarray3 {
+    type Out;
+
+    fn mut_ndarray3(self) -> Self::Out;
 }
