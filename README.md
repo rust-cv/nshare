@@ -1,2 +1,8 @@
-# ndarray-nalgebra
-Provides an interface layer to convert between ndarray and nalgebra types
+# nshare
+
+Provides traits that allow conversion between n-dimensional types in different Rust crates
+
+## Supported Crates
+* `image`
+* `ndarray`
+* `nalgebra`

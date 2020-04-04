@@ -1,0 +1,11 @@
+[package]
+name = "nshare"
+version = "0.1.0"
+authors = ["Geordon Worley <vadixidav@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+ndarray = { version = "0.13.0", default-features = false, optional = true }
+nalgebra = { version = "0.20.0", default-features = false, optional = true }
+image = { version = "0.23.2", default-features = false, optional = true }
+
