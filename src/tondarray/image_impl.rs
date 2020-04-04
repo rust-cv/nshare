@@ -30,13 +30,9 @@ where
             width_stride,
             ..
         } = self.sample_layout();
-        let (width, height) = (width as usize, height as usize);
-        let container = self.into_raw();
-        Array2::from_shape_vec(
-            (height, width).strides((height_stride, width_stride)),
-            container,
-        )
-        .unwrap()
+        let shape = (height as usize, width as usize);
+        let strides = (height_stride, width_stride);
+        Array2::from_shape_vec(shape.strides(strides), self.into_raw()).unwrap()
     }
 }
 
@@ -61,9 +57,16 @@ where
     type Out = ArrayView2<'a, A>;
 
     fn ref_ndarray2(self) -> Self::Out {
-        let (width, height) = self.dimensions();
-        let (width, height) = (width as usize, height as usize);
-        ArrayView2::from_shape((height, width).strides((width, 1)), &**self).unwrap()
+        let SampleLayout {
+            height,
+            height_stride,
+            width,
+            width_stride,
+            ..
+        } = self.sample_layout();
+        let shape = (height as usize, width as usize);
+        let strides = (height_stride, width_stride);
+        ArrayView2::from_shape(shape.strides(strides), &**self).unwrap()
     }
 }
 
@@ -86,9 +89,16 @@ where
     type Out = ArrayViewMut2<'a, A>;
 
     fn mut_ndarray2(self) -> Self::Out {
-        let (width, height) = self.dimensions();
-        let (width, height) = (width as usize, height as usize);
-        ArrayViewMut2::from_shape((height, width).strides((width, 1)), &mut **self).unwrap()
+        let SampleLayout {
+            height,
+            height_stride,
+            width,
+            width_stride,
+            ..
+        } = self.sample_layout();
+        let shape = (height as usize, width as usize);
+        let strides = (height_stride, width_stride);
+        ArrayViewMut2::from_shape(shape.strides(strides), &mut **self).unwrap()
     }
 }
 
@@ -118,16 +128,8 @@ where
             width,
             width_stride,
         } = self.sample_layout();
-        let (width, height) = (width as usize, height as usize);
-        let container = self.into_raw();
-        Array3::from_shape_vec(
-            (channels as usize, height, width).strides((
-                channel_stride,
-                height_stride,
-                width_stride,
-            )),
-            container,
-        )
-        .unwrap()
+        let shape = (channels as usize, height as usize, width as usize);
+        let strides = (channel_stride, height_stride, width_stride);
+        Array3::from_shape_vec(shape.strides(strides), self.into_raw()).unwrap()
     }
 }
