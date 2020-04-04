@@ -45,7 +45,7 @@ pub trait ToNdarray3 {
 pub trait RefNdarray1 {
     type Out;
 
-    fn ref_ndarray1(&self) -> Self::Out;
+    fn ref_ndarray1(self) -> Self::Out;
 }
 
 /// Converts a refferenced 2d type to a ndarray 2d array type.
@@ -57,7 +57,7 @@ pub trait RefNdarray1 {
 pub trait RefNdarray2 {
     type Out;
 
-    fn ref_ndarray2(&self) -> Self::Out;
+    fn ref_ndarray2(self) -> Self::Out;
 }
 
 /// Converts a refferenced 3d type to a ndarray 2d array type.
@@ -70,5 +70,5 @@ pub trait RefNdarray2 {
 pub trait RefNdarray3 {
     type Out;
 
-    fn ref_ndarray3(&self) -> Self::Out;
+    fn ref_ndarray3(self) -> Self::Out;
 }

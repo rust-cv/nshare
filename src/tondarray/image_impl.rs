@@ -2,7 +2,8 @@
 
 use super::*;
 use image::{ImageBuffer, Luma, Primitive};
-use ndarray::Array2;
+use ndarray::{Array2, ArrayView2, ShapeBuilder};
+use std::ops::Deref;
 
 /// ```
 /// use image::GrayImage;
@@ -27,5 +28,20 @@ where
         let (width, height) = (width as usize, height as usize);
         let container = self.into_raw();
         Array2::from_shape_vec((height, width), container).unwrap()
+    }
+}
+
+impl<'a, A, Container> RefNdarray2 for &'a ImageBuffer<Luma<A>, Container>
+where
+    A: Primitive + 'static,
+    Container: Deref<Target = [A]> + AsRef<[A]>,
+{
+    type Out = ArrayView2<'a, A>;
+
+    fn ref_ndarray2(self) -> Self::Out {
+        let (width, height) = self.dimensions();
+        let (width, height) = (width as usize, height as usize);
+        let slice: &'a [A] = unsafe { std::mem::transmute(self.as_flat_samples().as_slice()) };
+        ArrayView2::from_shape((height, width).strides((width, 1)), slice).unwrap()
     }
 }
