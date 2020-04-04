@@ -154,8 +154,28 @@ mod nalgebra_impl {
     #[cfg(feature = "std")]
     mod std_impl {
         use super::*;
-        use nalgebra::{allocator::Allocator, DefaultAllocator, Dynamic, VecStorage};
-        use ndarray::Array2;
+        use nalgebra::{allocator::Allocator, DVector, DefaultAllocator, Dynamic, VecStorage};
+        use ndarray::{Array1, Array2};
+
+        /// ```
+        /// use nshare::ToNdarray1;
+        /// use nalgebra::DVector;
+        /// use ndarray::s;
+        ///
+        /// let m = DVector::from_vec(vec![
+        ///     0.1, 0.2, 0.3, 0.4,
+        /// ]);
+        /// let arr = m.to_ndarray1();
+        /// assert_eq!(arr.dim(), 4);
+        /// assert!(arr.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
+        /// ```
+        impl<'a, N: Scalar> ToNdarray1 for DVector<N> {
+            type Out = Array1<N>;
+
+            fn to_ndarray1(self) -> Self::Out {
+                Array1::from_shape_vec((self.shape().0,), self.data.into()).unwrap()
+            }
+        }
 
         /// ```
         /// use nshare::ToNdarray2;
