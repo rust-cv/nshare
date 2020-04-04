@@ -1,8 +1,38 @@
 //! Implementations for nalgebra types being converted to ndarray types.
 
 use super::*;
-use nalgebra::{dimension::U1, Dim, Matrix, Scalar, SliceStorage, SliceStorageMut, Vector};
+use nalgebra::{
+    dimension::U1, storage::Storage, Dim, Matrix, Scalar, SliceStorage, SliceStorageMut, Vector,
+};
 use ndarray::{ArrayView1, ArrayView2, ArrayViewMut1, ArrayViewMut2, ShapeBuilder};
+
+/// ```
+/// use nshare::RefNdarray1;
+/// use nalgebra::Vector4;
+/// use ndarray::s;
+///
+/// let m = Vector4::new(
+///     0.1, 0.2, 0.3, 0.4f32,
+/// );
+/// let arr = m.ref_ndarray1();
+/// assert!(arr.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
+/// assert_eq!(arr.dim(), 4);
+/// ```
+impl<'a, N: Scalar, R: Dim, S> RefNdarray1 for &'a Vector<N, R, S>
+where
+    S: Storage<N, R, U1>,
+{
+    type Out = ArrayView1<'a, N>;
+
+    fn ref_ndarray1(self) -> Self::Out {
+        unsafe {
+            ArrayView1::from_shape_ptr(
+                (self.shape().0,).strides((self.strides().0,)),
+                self.as_ptr(),
+            )
+        }
+    }
+}
 
 /// ```
 /// use nshare::ToNdarray1;
