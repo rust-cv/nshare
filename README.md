@@ -20,6 +20,8 @@
 
 Provides traits that allow conversion between n-dimensional types in different Rust crates
 
+Right now this crate really only provides conversions to owned and borrowed ndarray types.
+
 ## Supported Crates
 * `image`
 * `ndarray`
