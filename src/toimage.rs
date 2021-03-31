@@ -5,5 +5,5 @@
 pub trait ToImageLuma {
     type Out;
 
-    fn to_image_luma(self) -> Self::Out;
+    fn into_image_luma(self) -> Self::Out;
 }

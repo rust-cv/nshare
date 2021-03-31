@@ -5,5 +5,5 @@
 pub trait ToNalgebra {
     type Out;
 
-    fn to_nalgebra(self) -> Self::Out;
+    fn into_nalgebra(self) -> Self::Out;
 }
