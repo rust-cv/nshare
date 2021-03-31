@@ -16,7 +16,7 @@ default = []
 std = ["nalgebra/std"]
 
 [dependencies]
-ndarray = { version = "0.14.0", default-features = false, optional = true }
+ndarray = { version = "0.15.0", default-features = false, optional = true }
 nalgebra = { version = "0.23.1", default-features = false, optional = true }
 image = { version = "0.23.12", default-features = false, optional = true }
 
