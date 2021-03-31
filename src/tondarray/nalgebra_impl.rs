@@ -71,7 +71,7 @@ where
 /// let m = Vector4::new(
 ///     0.1, 0.2, 0.3, 0.4f32,
 /// );
-/// let arr = m.rows(0, 4).to_ndarray1();
+/// let arr = m.rows(0, 4).into_ndarray1();
 /// assert!(arr.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
 /// assert_eq!(arr.dim(), 4);
 /// ```
@@ -80,7 +80,7 @@ impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
 {
     type Out = ArrayView1<'a, N>;
 
-    fn to_ndarray1(self) -> Self::Out {
+    fn into_ndarray1(self) -> Self::Out {
         unsafe {
             ArrayView1::from_shape_ptr(
                 (self.shape().0,).strides((self.strides().0,)),
@@ -97,7 +97,7 @@ impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
 /// let mut m = Vector4::new(
 ///     0.1, 0.2, 0.3, 0.4,
 /// );
-/// let arr = m.rows_generic_with_step_mut::<U2>(0, U2, 1).to_ndarray1().fill(0.0);
+/// let arr = m.rows_generic_with_step_mut::<U2>(0, U2, 1).into_ndarray1().fill(0.0);
 /// assert!(m.iter().eq(&[0.0, 0.2, 0.0, 0.4]));
 /// ```
 impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
@@ -105,7 +105,7 @@ impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
 {
     type Out = ArrayViewMut1<'a, N>;
 
-    fn to_ndarray1(self) -> Self::Out {
+    fn into_ndarray1(self) -> Self::Out {
         unsafe {
             ArrayViewMut1::from_shape_ptr(
                 (self.shape().0,).strides((self.strides().0,)),
@@ -181,7 +181,7 @@ where
 ///     1.1, 1.2, 1.3, 1.4,
 ///     1.5, 1.6, 1.7, 1.8,
 /// );
-/// let arr = m.row(1).to_ndarray2();
+/// let arr = m.row(1).into_ndarray2();
 /// assert!(arr.iter().eq(&[0.5, 0.6, 0.7, 0.8]));
 /// assert_eq!(arr.dim(), (1, 4));
 /// ```
@@ -190,7 +190,7 @@ impl<'a, N: Scalar, R: Dim, C: Dim, RStride: Dim, CStride: Dim> ToNdarray2
 {
     type Out = ArrayView2<'a, N>;
 
-    fn to_ndarray2(self) -> Self::Out {
+    fn into_ndarray2(self) -> Self::Out {
         unsafe { ArrayView2::from_shape_ptr(self.shape().strides(self.strides()), self.as_ptr()) }
     }
 }
@@ -205,7 +205,7 @@ impl<'a, N: Scalar, R: Dim, C: Dim, RStride: Dim, CStride: Dim> ToNdarray2
 ///     1.1, 1.2, 1.3, 1.4,
 ///     1.5, 1.6, 1.7, 1.8,
 /// );
-/// let arr = m.row_mut(1).to_ndarray2().fill(0.0);
+/// let arr = m.row_mut(1).into_ndarray2().fill(0.0);
 /// assert!(m.row(1).iter().eq(&[0.0; 4]));
 /// ```
 impl<'a, N: Scalar, R: Dim, C: Dim, RStride: Dim, CStride: Dim> ToNdarray2
@@ -213,7 +213,7 @@ impl<'a, N: Scalar, R: Dim, C: Dim, RStride: Dim, CStride: Dim> ToNdarray2
 {
     type Out = ArrayViewMut2<'a, N>;
 
-    fn to_ndarray2(self) -> Self::Out {
+    fn into_ndarray2(self) -> Self::Out {
         unsafe {
             ArrayViewMut2::from_shape_ptr(
                 self.shape().strides(self.strides()),
@@ -236,14 +236,14 @@ mod std_impl {
     /// let m = DVector::from_vec(vec![
     ///     0.1, 0.2, 0.3, 0.4,
     /// ]);
-    /// let arr = m.to_ndarray1();
+    /// let arr = m.into_ndarray1();
     /// assert_eq!(arr.dim(), 4);
     /// assert!(arr.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
     /// ```
     impl<'a, N: Scalar> ToNdarray1 for DVector<N> {
         type Out = Array1<N>;
 
-        fn to_ndarray1(self) -> Self::Out {
+        fn into_ndarray1(self) -> Self::Out {
             Array1::from_shape_vec((self.shape().0,), self.data.into()).unwrap()
         }
     }
@@ -259,7 +259,7 @@ mod std_impl {
     ///     1.1, 1.2, 1.3, 1.4,
     ///     1.5, 1.6, 1.7, 1.8,
     /// ]);
-    /// let arr = m.to_ndarray2();
+    /// let arr = m.into_ndarray2();
     /// assert!(arr.slice(s![0, ..]).iter().eq(&[0.1, 0.2, 0.3, 0.4]));
     /// assert!(arr.slice(s![.., 0]).iter().eq(&[0.1, 0.5, 1.1, 1.5]));
     /// ```
@@ -269,7 +269,7 @@ mod std_impl {
     {
         type Out = Array2<N>;
 
-        fn to_ndarray2(self) -> Self::Out {
+        fn into_ndarray2(self) -> Self::Out {
             Array2::from_shape_vec(self.shape(), self.data.into()).unwrap()
         }
     }

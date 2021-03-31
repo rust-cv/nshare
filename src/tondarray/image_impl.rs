@@ -11,7 +11,7 @@ use std::ops::{Deref, DerefMut};
 /// use ndarray::s;
 ///
 /// let zeros = GrayImage::new(2, 4);
-/// let mut nd = zeros.to_ndarray2();
+/// let mut nd = zeros.into_ndarray2();
 /// nd.fill(255);
 /// // ndarray uses (row, col), so the dims get flipped.
 /// assert_eq!(nd.dim(), (4, 2));
@@ -22,7 +22,7 @@ where
 {
     type Out = Array2<A>;
 
-    fn to_ndarray2(self) -> Self::Out {
+    fn into_ndarray2(self) -> Self::Out {
         let SampleLayout {
             height,
             height_stride,
@@ -108,7 +108,7 @@ where
 /// use ndarray::s;
 ///
 /// let zeros = RgbImage::new(2, 4);
-/// let mut nd = zeros.to_ndarray3();
+/// let mut nd = zeros.into_ndarray3();
 /// nd.fill(255);
 /// // ndarray uses (channel, row, col), so the dims get flipped.
 /// assert_eq!(nd.dim(), (3, 4, 2));
@@ -119,7 +119,7 @@ where
 {
     type Out = Array3<P::Subpixel>;
 
-    fn to_ndarray3(self) -> Self::Out {
+    fn into_ndarray3(self) -> Self::Out {
         let SampleLayout {
             channels,
             channel_stride,

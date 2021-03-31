@@ -10,7 +10,7 @@ mod nalgebra_impl;
 pub trait ToNdarray1 {
     type Out;
 
-    fn to_ndarray1(self) -> Self::Out;
+    fn into_ndarray1(self) -> Self::Out;
 }
 
 /// Converts a 2d type to a ndarray 2d array type.
@@ -22,7 +22,7 @@ pub trait ToNdarray1 {
 pub trait ToNdarray2 {
     type Out;
 
-    fn to_ndarray2(self) -> Self::Out;
+    fn into_ndarray2(self) -> Self::Out;
 }
 
 /// Converts a 3d type to a ndarray 2d array type.
@@ -35,7 +35,7 @@ pub trait ToNdarray2 {
 pub trait ToNdarray3 {
     type Out;
 
-    fn to_ndarray3(self) -> Self::Out;
+    fn into_ndarray3(self) -> Self::Out;
 }
 
 /// Borrows a 1d type to a ndarray 1d array type.
