@@ -20,7 +20,15 @@
 
 Provides traits that allow conversion between n-dimensional types in different Rust crates
 
-Right now this crate really only provides conversions to owned and borrowed ndarray types.
+**NOTE**: By default, this crate includes no conversions. You must choose which crates you want to use using the features:
+
+* `ndarray`
+* `nalgebra`
+* `image`
+
+When crates are included, any available conversions between the enabled crates are turned on.
+
+Right now this crate really only provides conversions to owned and borrowed ndarray types. Some limitations exist with `nalgebra`, as it only utilizes positive strides, while `ndarray` supports negative strides as well. The `image` crate has no concept of strides. Due to this, the `ndarray` crate is the most flexible, and is ideal for interoperability between these various crates.
 
 ## Supported Crates
 * `image`
