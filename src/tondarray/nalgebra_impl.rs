@@ -92,12 +92,12 @@ impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
 
 /// ```
 /// use nshare::ToNdarray1;
-/// use nalgebra::{Vector4, dimension::U2};
+/// use nalgebra::{Vector4, dimension::U2, Const};
 ///
 /// let mut m = Vector4::new(
 ///     0.1, 0.2, 0.3, 0.4,
 /// );
-/// let arr = m.rows_generic_with_step_mut::<U2>(0, U2, 1).into_ndarray1().fill(0.0);
+/// let arr = m.rows_generic_with_step_mut::<Const<2>>(0, Const::<2>, 1).into_ndarray1().fill(0.0);
 /// assert!(m.iter().eq(&[0.0, 0.2, 0.0, 0.4]));
 /// ```
 impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
