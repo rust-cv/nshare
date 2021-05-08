@@ -253,15 +253,16 @@ mod std_impl {
     /// use nalgebra::{Matrix, dimension::{U4, Dynamic}};
     /// use ndarray::s;
     ///
-    /// let m = Matrix::<f32, Dynamic, Dynamic, _>::from_vec(4, 4, vec![
-    ///     0.1, 0.2, 0.3, 0.4,
-    ///     0.5, 0.6, 0.7, 0.8,
-    ///     1.1, 1.2, 1.3, 1.4,
-    ///     1.5, 1.6, 1.7, 1.8,
+    /// // Note: from_vec takes data column-by-column !
+    /// let m = Matrix::<f32, Dynamic, Dynamic, _>::from_vec(3, 4, vec![
+    ///     0.1, 0.2, 0.3,
+    ///     0.5, 0.6, 0.7,
+    ///     1.1, 1.2, 1.3,
+    ///     1.5, 1.6, 1.7,
     /// ]);
     /// let arr = m.into_ndarray2();
-    /// assert!(arr.slice(s![0, ..]).iter().eq(&[0.1, 0.2, 0.3, 0.4]));
-    /// assert!(arr.slice(s![.., 0]).iter().eq(&[0.1, 0.5, 1.1, 1.5]));
+    /// assert!(arr.slice(s![.., 0]).iter().eq(&[0.1, 0.2, 0.3]));
+    /// assert!(arr.slice(s![0, ..]).iter().eq(&[0.1, 0.5, 1.1, 1.5]));
     /// ```
     impl<'a, N: Scalar> ToNdarray2 for Matrix<N, Dynamic, Dynamic, VecStorage<N, Dynamic, Dynamic>>
     where
@@ -270,7 +271,7 @@ mod std_impl {
         type Out = Array2<N>;
 
         fn into_ndarray2(self) -> Self::Out {
-            Array2::from_shape_vec(self.shape(), self.data.into()).unwrap()
+            Array2::from_shape_vec(self.shape().strides(self.strides()), self.data.into()).unwrap()
         }
     }
 }
