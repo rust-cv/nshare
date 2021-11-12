@@ -2,7 +2,7 @@
 name = "nshare"
 version = "0.7.1-alpha.0"
 authors = ["Geordon Worley <vadixidav@gmail.com>"]
-edition = "2018"
+edition = "2021"
 description = "Conversion between n-dimensional types in different Rust crates"
 documentation = "https://docs.rs/nshare/"
 repository = "https://github.com/rust-cv/nshare"
@@ -12,12 +12,12 @@ license = "MIT"
 readme = "README.md"
 
 [features]
-default = []
-std = ["nalgebra/std"]
+default = ["nalgebra", "nalgebra_std", "ndarray", "image"]
+nalgebra_std = ["nalgebra/std"]
 
 [dependencies]
 ndarray = { version = "0.15.3", default-features = false, optional = true }
-nalgebra = { version = "0.27.1", default-features = false, optional = true }
+nalgebra = { version = "0.29.0", default-features = false, optional = true }
 image = { version = "0.23.14", default-features = false, optional = true }
 
 [package.metadata.docs.rs]

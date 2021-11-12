@@ -223,7 +223,7 @@ impl<'a, N: Scalar, R: Dim, C: Dim, RStride: Dim, CStride: Dim> ToNdarray2
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(feature = "nalgebra_std")]
 mod std_impl {
     use super::*;
     use nalgebra::{allocator::Allocator, DVector, DefaultAllocator, Dynamic, VecStorage};
