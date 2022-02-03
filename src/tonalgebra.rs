@@ -1,4 +1,4 @@
-#[cfg(feature = "ndarray")]
+#[cfg(all(feature = "ndarray", feature = "nalgebra_std"))]
 mod ndarray_impl;
 
 /// Converts a 1 or 2 dimensional type to a nalgebra type.
