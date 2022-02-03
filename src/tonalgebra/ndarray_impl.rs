@@ -2,8 +2,8 @@
 
 use super::*;
 
+use core::convert::TryFrom;
 use nalgebra::Dynamic as Dy;
-use std::convert::TryFrom;
 
 /// ```
 /// use nshare::ToNalgebra;

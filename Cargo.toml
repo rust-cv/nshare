@@ -7,7 +7,7 @@ description = "Conversion between n-dimensional types in different Rust crates"
 documentation = "https://docs.rs/nshare/"
 repository = "https://github.com/rust-cv/nshare"
 keywords = ["ndarray", "nalgebra", "image", "convert", "borrow"]
-categories = ["rust-patterns"]
+categories = ["rust-patterns", "no-std"]
 license = "MIT"
 readme = "README.md"
 

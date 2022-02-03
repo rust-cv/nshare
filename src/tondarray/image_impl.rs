@@ -1,9 +1,13 @@
 //! Implementations for conversions from image types to ndarray types.
 
 use super::*;
+use core::ops::{Deref, DerefMut};
 use image::{flat::SampleLayout, ImageBuffer, Luma, Pixel, Primitive};
 use ndarray::{Array2, Array3, ArrayView2, ArrayView3, ArrayViewMut2, ArrayViewMut3, ShapeBuilder};
-use std::ops::{Deref, DerefMut};
+
+extern crate alloc;
+
+use alloc::vec::Vec;
 
 /// ```
 /// use image::GrayImage;

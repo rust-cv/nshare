@@ -1,3 +1,5 @@
+#![no_std]
+
 #[cfg(feature = "nalgebra")]
 mod tonalgebra;
 #[cfg(feature = "nalgebra")]
