@@ -5,7 +5,10 @@ authors = ["Geordon Worley <vadixidav@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-nshare = { path = ".." }
+nshare = { path = "..", default-features = false, features = [
+    "nalgebra",
+    "ndarray",
+] }
 
 [profile.dev]
 panic = "abort"

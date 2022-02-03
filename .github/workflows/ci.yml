@@ -62,12 +62,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: rustc
-          args: >-
-            --no-default-features
-            --features
-            nalgebra,ndarray
-            --target=armv7a-none-eabi
-            --manifest-path=ensure_no_std/Cargo.toml
+          args: --target=armv7a-none-eabi --manifest-path=ensure_no_std/Cargo.toml
 
   tests:
     name: tests
