@@ -136,7 +136,7 @@ impl<'a, T> ToNalgebra for ndarray::ArrayViewMut2<'a, T>
 where
     T: nalgebra::Scalar,
 {
-    type Out = nalgebra::DMatrixViewMut <'a, T, Dyn, Dyn>;
+    type Out = nalgebra::DMatrixViewMut<'a, T, Dyn, Dyn>;
     fn into_nalgebra(mut self) -> Self::Out {
         let nrows = Dyn(self.nrows());
         let ncols = Dyn(self.ncols());

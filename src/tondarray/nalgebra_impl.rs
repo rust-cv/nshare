@@ -4,7 +4,7 @@ use super::*;
 use nalgebra::{
     dimension::U1,
     storage::{Storage, StorageMut},
-    Dim, Matrix, Scalar, ViewStorage, ViewStorageMut, Vector,
+    Dim, Matrix, Scalar, Vector, ViewStorage, ViewStorageMut,
 };
 use ndarray::{ArrayView1, ArrayView2, ArrayViewMut1, ArrayViewMut2, ShapeBuilder};
 
