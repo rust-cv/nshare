@@ -16,8 +16,8 @@ default = ["nalgebra", "nalgebra_std", "ndarray", "image"]
 nalgebra_std = ["nalgebra/std"]
 
 [dependencies]
-ndarray = { version = "0.15.4", default-features = false, optional = true }
-nalgebra = { version = "0.30.1", default-features = false, optional = true }
+ndarray = { version = "0.15.6", default-features = false, optional = true }
+nalgebra = { version = "0.32.1", default-features = false, optional = true }
 image = { version = "0.24.0", default-features = false, optional = true }
 
 [package.metadata.docs.rs]
