@@ -19,17 +19,16 @@
 
 Provides traits that allow conversion between n-dimensional types in different Rust crates
 
-**NOTE**: By default, this crate includes no conversions. You must choose which crates you want to use using the features:
+**NOTE**: By default, this crate includes conversions for all supported crates. If you want to limit compilation, use `no-default-features = true` enable the corresponding feature for each dependency:
 
-* `ndarray`
 * `nalgebra`
+* `ndarray`
 * `image`
 
-When crates are included, any available conversions between the enabled crates are turned on.
+When two crate features are enabled, any available conversions between the two crates are turned on.
+
+## Limitations
 
 Right now this crate really only provides conversions to owned and borrowed ndarray types. Some limitations exist with `nalgebra`, as it only utilizes positive strides, while `ndarray` supports negative strides as well. The `image` crate has no concept of strides. Due to this, the `ndarray` crate is the most flexible, and is ideal for interoperability between these various crates.
 
-## Supported Crates
-* `image`
-* `ndarray`
-* `nalgebra`
+`nalgebra` currently does not offer a solution to directly pass it an owned vector from `ndarray`, so `into` conversions do perform a copy. It is recommended to create the owned copy in `nalgebra` and then borrow a mutable array view of it using ndarray. You can then populate it accordingly without any copies of the data.
