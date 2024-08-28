@@ -12,8 +12,11 @@ license = "MIT"
 readme = "README.md"
 
 [features]
-default = ["nalgebra", "nalgebra_std", "ndarray", "image"]
-nalgebra_std = ["nalgebra/std"]
+default = ["alloc", "nalgebra", "ndarray", "image"]
+alloc = ["nalgebra?/alloc"]
+nalgebra = ["dep:nalgebra"]
+ndarray = ["dep:ndarray", "alloc"]
+image = ["dep:image", "alloc"]
 
 [dependencies]
 ndarray = { version = "0.16", default-features = false, optional = true }

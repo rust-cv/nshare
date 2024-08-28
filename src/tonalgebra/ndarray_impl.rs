@@ -6,14 +6,14 @@ use core::convert::TryFrom;
 use nalgebra::Dyn;
 
 /// ```
-/// use nshare::ToNalgebra;
+/// use nshare::IntoNalgebra;
 ///
 /// let arr = ndarray::arr1(&[0.1, 0.2, 0.3, 0.4]);
 /// let m = arr.view().into_nalgebra();
 /// assert!(m.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
 /// assert_eq!(m.shape(), (4, 1));
 /// ```
-impl<'a, T> ToNalgebra for ndarray::ArrayView1<'a, T>
+impl<'a, T> IntoNalgebra for ndarray::ArrayView1<'a, T>
 where
     T: nalgebra::Scalar,
 {
@@ -33,14 +33,14 @@ where
     }
 }
 /// ```
-/// use nshare::ToNalgebra;
+/// use nshare::IntoNalgebra;
 ///
 /// let mut arr = ndarray::arr1(&[0.1, 0.2, 0.3, 0.4]);
 /// let m = arr.view_mut().into_nalgebra();
 /// assert!(m.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
 /// assert_eq!(m.shape(), (4, 1));
 /// ```
-impl<'a, T> ToNalgebra for ndarray::ArrayViewMut1<'a, T>
+impl<'a, T> IntoNalgebra for ndarray::ArrayViewMut1<'a, T>
 where
     T: nalgebra::Scalar,
 {
@@ -61,14 +61,14 @@ where
 }
 
 /// ```
-/// use nshare::ToNalgebra;
+/// use nshare::IntoNalgebra;
 ///
 /// let arr = ndarray::arr1(&[0.1, 0.2, 0.3, 0.4]);
 /// let m = arr.into_nalgebra();
 /// assert!(m.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
 /// assert_eq!(m.shape(), (4, 1));
 /// ```
-impl<T> ToNalgebra for ndarray::Array1<T>
+impl<T> IntoNalgebra for ndarray::Array1<T>
 where
     T: nalgebra::Scalar,
 {
@@ -85,7 +85,7 @@ where
 }
 
 /// ```
-/// use nshare::ToNalgebra;
+/// use nshare::IntoNalgebra;
 ///
 /// let arr = ndarray::arr2(&[
 ///     [0.1, 0.2, 0.3, 0.4],
@@ -98,7 +98,7 @@ where
 /// assert_eq!(m.shape(), (4, 4));
 /// assert!(arr.t().into_nalgebra().column(1).iter().eq(&[0.5, 0.6, 0.7, 0.8]));
 /// ```
-impl<'a, T> ToNalgebra for ndarray::ArrayView2<'a, T>
+impl<'a, T> IntoNalgebra for ndarray::ArrayView2<'a, T>
 where
     T: nalgebra::Scalar,
 {
@@ -122,7 +122,7 @@ where
 }
 
 /// ```
-/// use nshare::ToNalgebra;
+/// use nshare::IntoNalgebra;
 ///
 /// let mut arr = ndarray::arr2(&[
 ///     [0.1, 0.2, 0.3, 0.4],
@@ -135,7 +135,7 @@ where
 /// assert_eq!(m.shape(), (4, 4));
 /// assert!(arr.view_mut().reversed_axes().into_nalgebra().column(1).iter().eq(&[0.5, 0.6, 0.7, 0.8]));
 /// ```
-impl<'a, T> ToNalgebra for ndarray::ArrayViewMut2<'a, T>
+impl<'a, T> IntoNalgebra for ndarray::ArrayViewMut2<'a, T>
 where
     T: nalgebra::Scalar,
 {
@@ -159,7 +159,7 @@ where
 }
 
 /// ```
-/// use nshare::ToNalgebra;
+/// use nshare::IntoNalgebra;
 ///
 /// let mut arr = ndarray::arr2(&[
 ///     [0.1, 0.2, 0.3, 0.4],
@@ -172,7 +172,7 @@ where
 /// assert_eq!(m.shape(), (4, 4));
 /// assert!(arr.reversed_axes().into_nalgebra().column(1).iter().eq(&[0.5, 0.6, 0.7, 0.8]));
 /// ```
-impl<T> ToNalgebra for ndarray::Array2<T>
+impl<T> IntoNalgebra for ndarray::Array2<T>
 where
     T: nalgebra::Scalar,
 {
