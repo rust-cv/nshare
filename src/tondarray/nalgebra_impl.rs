@@ -4,9 +4,9 @@ use super::*;
 use nalgebra::{
     dimension::U1,
     storage::{Storage, StorageMut},
-    Dim, Matrix, Scalar, SliceStorage, SliceStorageMut, Vector,
+    Dim, Matrix, Scalar, Vector, ViewStorage, ViewStorageMut,
 };
-use ndarray::{ArrayView1, ArrayView2, ArrayViewMut1, ArrayViewMut2, ShapeBuilder};
+use ndarray::ShapeBuilder;
 
 /// ```
 /// use nshare::RefNdarray1;
@@ -24,11 +24,11 @@ impl<'a, N: Scalar, R: Dim, S> RefNdarray1 for &'a Vector<N, R, S>
 where
     S: Storage<N, R, U1>,
 {
-    type Out = ArrayView1<'a, N>;
+    type Out = ndarray::ArrayView1<'a, N>;
 
     fn ref_ndarray1(self) -> Self::Out {
         unsafe {
-            ArrayView1::from_shape_ptr(
+            ndarray::ArrayView1::from_shape_ptr(
                 (self.shape().0,).strides((self.strides().0,)),
                 self.as_ptr(),
             )
@@ -52,11 +52,11 @@ impl<'a, N: Scalar, R: Dim, S> MutNdarray1 for &'a mut Vector<N, R, S>
 where
     S: StorageMut<N, R, U1>,
 {
-    type Out = ArrayViewMut1<'a, N>;
+    type Out = ndarray::ArrayViewMut1<'a, N>;
 
     fn mut_ndarray1(self) -> Self::Out {
         unsafe {
-            ArrayViewMut1::from_shape_ptr(
+            ndarray::ArrayViewMut1::from_shape_ptr(
                 (self.shape().0,).strides((self.strides().0,)),
                 self.as_ptr() as *mut N,
             )
@@ -76,13 +76,13 @@ where
 /// assert_eq!(arr.dim(), 4);
 /// ```
 impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
-    for Vector<N, R, SliceStorage<'a, N, R, U1, RStride, CStride>>
+    for Vector<N, R, ViewStorage<'a, N, R, U1, RStride, CStride>>
 {
-    type Out = ArrayView1<'a, N>;
+    type Out = ndarray::ArrayView1<'a, N>;
 
     fn into_ndarray1(self) -> Self::Out {
         unsafe {
-            ArrayView1::from_shape_ptr(
+            ndarray::ArrayView1::from_shape_ptr(
                 (self.shape().0,).strides((self.strides().0,)),
                 self.as_ptr(),
             )
@@ -101,13 +101,13 @@ impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
 /// assert!(m.iter().eq(&[0.0, 0.2, 0.0, 0.4]));
 /// ```
 impl<'a, N: Scalar, R: Dim, RStride: Dim, CStride: Dim> ToNdarray1
-    for Matrix<N, R, U1, SliceStorageMut<'a, N, R, U1, RStride, CStride>>
+    for Matrix<N, R, U1, ViewStorageMut<'a, N, R, U1, RStride, CStride>>
 {
-    type Out = ArrayViewMut1<'a, N>;
+    type Out = ndarray::ArrayViewMut1<'a, N>;
 
     fn into_ndarray1(self) -> Self::Out {
         unsafe {
-            ArrayViewMut1::from_shape_ptr(
+            ndarray::ArrayViewMut1::from_shape_ptr(
                 (self.shape().0,).strides((self.strides().0,)),
                 self.as_ptr() as *mut N,
             )
@@ -134,10 +134,12 @@ impl<'a, N: Scalar, R: Dim, C: Dim, S> RefNdarray2 for &'a Matrix<N, R, C, S>
 where
     S: Storage<N, R, C>,
 {
-    type Out = ArrayView2<'a, N>;
+    type Out = ndarray::ArrayView2<'a, N>;
 
     fn ref_ndarray2(self) -> Self::Out {
-        unsafe { ArrayView2::from_shape_ptr(self.shape().strides(self.strides()), self.as_ptr()) }
+        unsafe {
+            ndarray::ArrayView2::from_shape_ptr(self.shape().strides(self.strides()), self.as_ptr())
+        }
     }
 }
 
@@ -159,11 +161,11 @@ impl<'a, N: Scalar, R: Dim, C: Dim, S> MutNdarray2 for &'a mut Matrix<N, R, C, S
 where
     S: StorageMut<N, R, C>,
 {
-    type Out = ArrayViewMut2<'a, N>;
+    type Out = ndarray::ArrayViewMut2<'a, N>;
 
     fn mut_ndarray2(self) -> Self::Out {
         unsafe {
-            ArrayViewMut2::from_shape_ptr(
+            ndarray::ArrayViewMut2::from_shape_ptr(
                 self.shape().strides(self.strides()),
                 self.as_ptr() as *mut N,
             )
@@ -186,12 +188,14 @@ where
 /// assert_eq!(arr.dim(), (1, 4));
 /// ```
 impl<'a, N: Scalar, R: Dim, C: Dim, RStride: Dim, CStride: Dim> ToNdarray2
-    for Matrix<N, R, C, SliceStorage<'a, N, R, C, RStride, CStride>>
+    for Matrix<N, R, C, ViewStorage<'a, N, R, C, RStride, CStride>>
 {
-    type Out = ArrayView2<'a, N>;
+    type Out = ndarray::ArrayView2<'a, N>;
 
     fn into_ndarray2(self) -> Self::Out {
-        unsafe { ArrayView2::from_shape_ptr(self.shape().strides(self.strides()), self.as_ptr()) }
+        unsafe {
+            ndarray::ArrayView2::from_shape_ptr(self.shape().strides(self.strides()), self.as_ptr())
+        }
     }
 }
 
@@ -209,13 +213,13 @@ impl<'a, N: Scalar, R: Dim, C: Dim, RStride: Dim, CStride: Dim> ToNdarray2
 /// assert!(m.row(1).iter().eq(&[0.0; 4]));
 /// ```
 impl<'a, N: Scalar, R: Dim, C: Dim, RStride: Dim, CStride: Dim> ToNdarray2
-    for Matrix<N, R, C, SliceStorageMut<'a, N, R, C, RStride, CStride>>
+    for Matrix<N, R, C, ViewStorageMut<'a, N, R, C, RStride, CStride>>
 {
-    type Out = ArrayViewMut2<'a, N>;
+    type Out = ndarray::ArrayViewMut2<'a, N>;
 
     fn into_ndarray2(self) -> Self::Out {
         unsafe {
-            ArrayViewMut2::from_shape_ptr(
+            ndarray::ArrayViewMut2::from_shape_ptr(
                 self.shape().strides(self.strides()),
                 self.as_ptr() as *mut N,
             )
@@ -226,7 +230,7 @@ impl<'a, N: Scalar, R: Dim, C: Dim, RStride: Dim, CStride: Dim> ToNdarray2
 #[cfg(feature = "nalgebra_std")]
 mod std_impl {
     use super::*;
-    use nalgebra::{allocator::Allocator, DVector, DefaultAllocator, Dynamic, VecStorage};
+    use nalgebra::{allocator::Allocator, DVector, DefaultAllocator, Dyn, VecStorage};
     use ndarray::{Array1, Array2};
     /// ```
     /// use nshare::ToNdarray1;
@@ -240,7 +244,7 @@ mod std_impl {
     /// assert_eq!(arr.dim(), 4);
     /// assert!(arr.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
     /// ```
-    impl<'a, N: Scalar> ToNdarray1 for DVector<N> {
+    impl<N: Scalar> ToNdarray1 for DVector<N> {
         type Out = Array1<N>;
 
         fn into_ndarray1(self) -> Self::Out {
@@ -264,9 +268,9 @@ mod std_impl {
     /// assert!(arr.slice(s![.., 0]).iter().eq(&[0.1, 0.2, 0.3]));
     /// assert!(arr.slice(s![0, ..]).iter().eq(&[0.1, 0.5, 1.1, 1.5]));
     /// ```
-    impl<'a, N: Scalar> ToNdarray2 for Matrix<N, Dynamic, Dynamic, VecStorage<N, Dynamic, Dynamic>>
+    impl<N: Scalar> ToNdarray2 for Matrix<N, Dyn, Dyn, VecStorage<N, Dyn, Dyn>>
     where
-        DefaultAllocator: Allocator<N, Dynamic, Dynamic, Buffer = VecStorage<N, Dynamic, Dynamic>>,
+        DefaultAllocator: Allocator<Dyn, Dyn, Buffer<N> = VecStorage<N, Dyn, Dyn>>,
     {
         type Out = Array2<N>;
 

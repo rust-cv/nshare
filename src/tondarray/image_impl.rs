@@ -70,7 +70,7 @@ where
         } = self.sample_layout();
         let shape = (height as usize, width as usize);
         let strides = (height_stride, width_stride);
-        ArrayView2::from_shape(shape.strides(strides), &**self).unwrap()
+        ArrayView2::from_shape(shape.strides(strides), self).unwrap()
     }
 }
 
@@ -102,7 +102,7 @@ where
         } = self.sample_layout();
         let shape = (height as usize, width as usize);
         let strides = (height_stride, width_stride);
-        ArrayViewMut2::from_shape(shape.strides(strides), &mut **self).unwrap()
+        ArrayViewMut2::from_shape(shape.strides(strides), self).unwrap()
     }
 }
 
@@ -170,7 +170,7 @@ where
         } = self.sample_layout();
         let shape = (channels as usize, height as usize, width as usize);
         let strides = (channel_stride, height_stride, width_stride);
-        ArrayView3::from_shape(shape.strides(strides), &**self).unwrap()
+        ArrayView3::from_shape(shape.strides(strides), self).unwrap()
     }
 }
 
@@ -201,6 +201,6 @@ where
         } = self.sample_layout();
         let shape = (channels as usize, height as usize, width as usize);
         let strides = (channel_stride, height_stride, width_stride);
-        ArrayViewMut3::from_shape(shape.strides(strides), &mut **self).unwrap()
+        ArrayViewMut3::from_shape(shape.strides(strides), self).unwrap()
     }
 }
