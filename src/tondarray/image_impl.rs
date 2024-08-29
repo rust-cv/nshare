@@ -11,7 +11,7 @@ use alloc::vec::Vec;
 
 /// ```
 /// use image::GrayImage;
-/// use nshare::ToNdarray2;
+/// use nshare::IntoNdarray2;
 /// use ndarray::s;
 ///
 /// let zeros = GrayImage::new(2, 4);
@@ -20,7 +20,7 @@ use alloc::vec::Vec;
 /// // ndarray uses (row, col), so the dims get flipped.
 /// assert_eq!(nd.dim(), (4, 2));
 /// ```
-impl<A> ToNdarray2 for ImageBuffer<Luma<A>, Vec<A>>
+impl<A> IntoNdarray2 for ImageBuffer<Luma<A>, Vec<A>>
 where
     A: Primitive + 'static,
 {
@@ -42,25 +42,27 @@ where
 
 /// ```
 /// use image::{GrayImage, Luma};
-/// use nshare::RefNdarray2;
+/// use nshare::AsNdarray2;
 /// use ndarray::s;
 ///
 /// let mut vals = GrayImage::new(2, 4);
 /// vals[(1, 0)] = Luma([255]);
-/// let nd = vals.ref_ndarray2();
+/// let nd = vals.as_ndarray2();
 /// // ndarray uses (row, col), so the dims get flipped.
 /// assert_eq!(nd.dim(), (4, 2));
 /// // The first row should sum to 255.
 /// assert_eq!(nd.slice(s![0, ..]).sum(), 255);
 /// ```
-impl<'a, A, Container> RefNdarray2 for &'a ImageBuffer<Luma<A>, Container>
+impl<A, Container> AsNdarray2 for ImageBuffer<Luma<A>, Container>
 where
     A: Primitive + 'static,
     Container: Deref<Target = [A]>,
 {
-    type Out = ArrayView2<'a, A>;
+    type Out<'a> = ArrayView2<'a, A>
+    where
+        Container: 'a;
 
-    fn ref_ndarray2(self) -> Self::Out {
+    fn as_ndarray2(&self) -> Self::Out<'_> {
         let SampleLayout {
             height,
             height_stride,
@@ -70,29 +72,31 @@ where
         } = self.sample_layout();
         let shape = (height as usize, width as usize);
         let strides = (height_stride, width_stride);
-        ArrayView2::from_shape(shape.strides(strides), &**self).unwrap()
+        ArrayView2::from_shape(shape.strides(strides), self).unwrap()
     }
 }
 
 /// ```
 /// use image::{GrayImage, Luma};
-/// use nshare::MutNdarray2;
+/// use nshare::AsNdarray2Mut;
 /// use ndarray::s;
 ///
 /// let mut vals = GrayImage::new(2, 4);
-/// let mut nd = vals.mut_ndarray2();
+/// let mut nd = vals.as_ndarray2_mut();
 /// assert_eq!(nd.dim(), (4, 2));
 /// nd.slice_mut(s![0, ..]).fill(255);
 /// assert_eq!(vals[(1, 0)], Luma([255]));
 /// ```
-impl<'a, A, Container> MutNdarray2 for &'a mut ImageBuffer<Luma<A>, Container>
+impl<A, Container> AsNdarray2Mut for ImageBuffer<Luma<A>, Container>
 where
     A: Primitive + 'static,
     Container: DerefMut<Target = [A]>,
 {
-    type Out = ArrayViewMut2<'a, A>;
+    type Out<'a> = ArrayViewMut2<'a, A>
+    where
+        Container: 'a;
 
-    fn mut_ndarray2(self) -> Self::Out {
+    fn as_ndarray2_mut(&mut self) -> Self::Out<'_> {
         let SampleLayout {
             height,
             height_stride,
@@ -102,13 +106,13 @@ where
         } = self.sample_layout();
         let shape = (height as usize, width as usize);
         let strides = (height_stride, width_stride);
-        ArrayViewMut2::from_shape(shape.strides(strides), &mut **self).unwrap()
+        ArrayViewMut2::from_shape(shape.strides(strides), self).unwrap()
     }
 }
 
 /// ```
 /// use image::RgbImage;
-/// use nshare::ToNdarray3;
+/// use nshare::IntoNdarray3;
 /// use ndarray::s;
 ///
 /// let zeros = RgbImage::new(2, 4);
@@ -117,7 +121,7 @@ where
 /// // ndarray uses (channel, row, col), so the dims get flipped.
 /// assert_eq!(nd.dim(), (3, 4, 2));
 /// ```
-impl<P> ToNdarray3 for ImageBuffer<P, Vec<P::Subpixel>>
+impl<P> IntoNdarray3 for ImageBuffer<P, Vec<P::Subpixel>>
 where
     P: Pixel + 'static,
 {
@@ -140,12 +144,12 @@ where
 
 /// ```
 /// use image::{RgbImage, Rgb};
-/// use nshare::RefNdarray3;
+/// use nshare::AsNdarray3;
 /// use ndarray::s;
 ///
 /// let mut vals = RgbImage::new(2, 4);
 /// vals[(1, 0)] = Rgb([0, 255, 0]);
-/// let nd = vals.ref_ndarray3();
+/// let nd = vals.as_ndarray3();
 /// // ndarray uses (channel, row, col), so the dims get flipped.
 /// assert_eq!(nd.dim(), (3, 4, 2));
 /// // The first row green should sum to 255.
@@ -153,13 +157,13 @@ where
 /// // The first row red should sum to 0.
 /// assert_eq!(nd.slice(s![0, 0, ..]).sum(), 0);
 /// ```
-impl<'a, P> RefNdarray3 for &'a ImageBuffer<P, Vec<P::Subpixel>>
+impl<P> AsNdarray3 for ImageBuffer<P, Vec<P::Subpixel>>
 where
     P: Pixel + 'static,
 {
-    type Out = ArrayView3<'a, P::Subpixel>;
+    type Out<'a> = ArrayView3<'a, P::Subpixel>;
 
-    fn ref_ndarray3(self) -> Self::Out {
+    fn as_ndarray3(&self) -> Self::Out<'_> {
         let SampleLayout {
             channels,
             channel_stride,
@@ -170,27 +174,27 @@ where
         } = self.sample_layout();
         let shape = (channels as usize, height as usize, width as usize);
         let strides = (channel_stride, height_stride, width_stride);
-        ArrayView3::from_shape(shape.strides(strides), &**self).unwrap()
+        ArrayView3::from_shape(shape.strides(strides), self).unwrap()
     }
 }
 
 /// ```
 /// use image::{RgbImage, Rgb};
-/// use nshare::MutNdarray3;
+/// use nshare::AsNdarray3Mut;
 /// use ndarray::s;
 ///
 /// let mut vals = RgbImage::new(2, 4);
 /// // Set all the blue channel to 255.
-/// vals.mut_ndarray3().slice_mut(s![2, .., ..]).fill(255);
+/// vals.as_ndarray3_mut().slice_mut(s![2, .., ..]).fill(255);
 /// assert_eq!(vals[(0, 0)], Rgb([0, 0, 255]));
 /// ```
-impl<'a, P> MutNdarray3 for &'a mut ImageBuffer<P, Vec<P::Subpixel>>
+impl<P> AsNdarray3Mut for ImageBuffer<P, Vec<P::Subpixel>>
 where
     P: Pixel + 'static,
 {
-    type Out = ArrayViewMut3<'a, P::Subpixel>;
+    type Out<'a> = ArrayViewMut3<'a, P::Subpixel>;
 
-    fn mut_ndarray3(self) -> Self::Out {
+    fn as_ndarray3_mut(&mut self) -> Self::Out<'_> {
         let SampleLayout {
             channels,
             channel_stride,
@@ -201,6 +205,6 @@ where
         } = self.sample_layout();
         let shape = (channels as usize, height as usize, width as usize);
         let strides = (channel_stride, height_stride, width_stride);
-        ArrayViewMut3::from_shape(shape.strides(strides), &mut **self).unwrap()
+        ArrayViewMut3::from_shape(shape.strides(strides), self).unwrap()
     }
 }
