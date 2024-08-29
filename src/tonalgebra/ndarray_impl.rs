@@ -8,7 +8,7 @@ use nalgebra::Dyn;
 /// ```
 /// use nshare::IntoNalgebra;
 ///
-/// let arr = ndarray::arr1(&[0.1, 0.2, 0.3, 0.4]);
+/// let arr = ndarray::array![0.1, 0.2, 0.3, 0.4];
 /// let m = arr.view().into_nalgebra();
 /// assert!(m.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
 /// assert_eq!(m.shape(), (4, 1));
@@ -35,7 +35,7 @@ where
 /// ```
 /// use nshare::IntoNalgebra;
 ///
-/// let mut arr = ndarray::arr1(&[0.1, 0.2, 0.3, 0.4]);
+/// let mut arr = ndarray::array![0.1, 0.2, 0.3, 0.4];
 /// let m = arr.view_mut().into_nalgebra();
 /// assert!(m.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
 /// assert_eq!(m.shape(), (4, 1));
@@ -63,7 +63,7 @@ where
 /// ```
 /// use nshare::IntoNalgebra;
 ///
-/// let arr = ndarray::arr1(&[0.1, 0.2, 0.3, 0.4]);
+/// let arr = ndarray::array![0.1, 0.2, 0.3, 0.4];
 /// let m = arr.into_nalgebra();
 /// assert!(m.iter().eq(&[0.1, 0.2, 0.3, 0.4]));
 /// assert_eq!(m.shape(), (4, 1));
@@ -87,12 +87,12 @@ where
 /// ```
 /// use nshare::IntoNalgebra;
 ///
-/// let arr = ndarray::arr2(&[
+/// let arr = ndarray::array![
 ///     [0.1, 0.2, 0.3, 0.4],
 ///     [0.5, 0.6, 0.7, 0.8],
 ///     [1.1, 1.2, 1.3, 1.4],
 ///     [1.5, 1.6, 1.7, 1.8],
-/// ]);
+/// ];
 /// let m = arr.view().into_nalgebra();
 /// assert!(m.row(1).iter().eq(&[0.5, 0.6, 0.7, 0.8]));
 /// assert_eq!(m.shape(), (4, 4));
@@ -107,9 +107,10 @@ where
         let nrows = Dyn(self.nrows());
         let ncols = Dyn(self.ncols());
         let ptr = self.as_ptr();
-        let stride_row: usize = TryFrom::try_from(self.strides()[0]).expect("Negative row stride");
-        let stride_col: usize =
-            TryFrom::try_from(self.strides()[1]).expect("Negative column stride");
+        let stride_row: usize = TryFrom::try_from(self.strides()[0])
+            .expect("can only convert positive row stride to nalgebra");
+        let stride_col: usize = TryFrom::try_from(self.strides()[1])
+            .expect("can only convert positive col stride to nalgebra");
         let storage = unsafe {
             nalgebra::ViewStorage::from_raw_parts(
                 ptr,
@@ -124,12 +125,12 @@ where
 /// ```
 /// use nshare::IntoNalgebra;
 ///
-/// let mut arr = ndarray::arr2(&[
+/// let mut arr = ndarray::array![
 ///     [0.1, 0.2, 0.3, 0.4],
 ///     [0.5, 0.6, 0.7, 0.8],
 ///     [1.1, 1.2, 1.3, 1.4],
 ///     [1.5, 1.6, 1.7, 1.8],
-/// ]);
+/// ];
 /// let m = arr.view_mut().into_nalgebra();
 /// assert!(m.row(1).iter().eq(&[0.5, 0.6, 0.7, 0.8]));
 /// assert_eq!(m.shape(), (4, 4));
@@ -143,9 +144,10 @@ where
     fn into_nalgebra(mut self) -> Self::Out {
         let nrows = Dyn(self.nrows());
         let ncols = Dyn(self.ncols());
-        let stride_row: usize = TryFrom::try_from(self.strides()[0]).expect("Negative row stride");
-        let stride_col: usize =
-            TryFrom::try_from(self.strides()[1]).expect("Negative column stride");
+        let stride_row: usize = TryFrom::try_from(self.strides()[0])
+            .expect("can only convert positive row stride to nalgebra");
+        let stride_col: usize = TryFrom::try_from(self.strides()[1])
+            .expect("can only convert positive col stride to nalgebra");
         let ptr = self.as_mut_ptr();
         let storage = unsafe {
             nalgebra::ViewStorageMut::from_raw_parts(
@@ -161,12 +163,12 @@ where
 /// ```
 /// use nshare::IntoNalgebra;
 ///
-/// let mut arr = ndarray::arr2(&[
+/// let mut arr = ndarray::array![
 ///     [0.1, 0.2, 0.3, 0.4],
 ///     [0.5, 0.6, 0.7, 0.8],
 ///     [1.1, 1.2, 1.3, 1.4],
 ///     [1.5, 1.6, 1.7, 1.8],
-/// ]);
+/// ];
 /// let m = arr.clone().into_nalgebra();
 /// assert!(m.row(1).iter().eq(&[0.5, 0.6, 0.7, 0.8]));
 /// assert_eq!(m.shape(), (4, 4));
