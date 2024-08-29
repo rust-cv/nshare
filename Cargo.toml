@@ -1,6 +1,6 @@
 [package]
 name = "nshare"
-version = "0.9.0"
+version = "0.10.0"
 authors = ["Geordon Worley <vadixidav@gmail.com>"]
 edition = "2021"
 description = "Conversion between n-dimensional types in different Rust crates"
