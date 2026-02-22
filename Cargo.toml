@@ -19,7 +19,7 @@ ndarray = ["dep:ndarray", "alloc"]
 image = ["dep:image", "alloc"]
 
 [dependencies]
-ndarray = { version = "0.16", default-features = false, optional = true }
+ndarray = { version = "0.17", default-features = false, optional = true }
 nalgebra = { version = "0.33", default-features = false, optional = true }
 image = { version = "0.25", default-features = false, optional = true }
 
